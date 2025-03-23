@@ -49,6 +49,7 @@ camera.position.z = 5;
 
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+// document.body.appendChild(renderer.domElement);
 
 const animate = () => {
   requestAnimationFrame(animate);

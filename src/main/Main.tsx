@@ -1,6 +1,6 @@
 import { initRender } from "./game";
 
-export const Draft = () => {
+export const Main = () => {
   const canvas = initRender();
   return (
     <div
