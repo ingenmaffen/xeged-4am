@@ -1,4 +1,4 @@
-import { Mesh, PerspectiveCamera, Scene, WebGLRenderer } from "three";
+import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock } from "three";
 import { setupScene } from "./scene-setup";
 
 export enum MoveDirection {
@@ -34,6 +34,7 @@ const movingObjects: MovingObjects[] = [];
 const scene = new Scene();
 setupScene(scene, movingObjects);
 const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+const clock = new Clock();
 
 // camera rotation limits for v0.9
 let cameraRotationPositive = false;
@@ -53,26 +54,27 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 const animate = () => {
   requestAnimationFrame(animate);
+  const delta = clock.getDelta() * 100;
   // camera.rotation.y -= 0.001;
 
   if (cameraRotationPositive) {
-    camera.rotation.y += cameraRotationSpeed;
+    camera.rotation.y += cameraRotationSpeed * delta;
     cameraRotationPositive = camera.rotation.y < Math.PI / 6;
   } else {
-    camera.rotation.y -= cameraRotationSpeed;
+    camera.rotation.y -= cameraRotationSpeed * delta;
     cameraRotationPositive = camera.rotation.y < -Math.PI / 6;
   }
 
   movingObjects.forEach((object) => {
     if (object.isMovingPositive) {
-      object.mesh.position[object.moveDirection] += object.moveSpeed;
+      object.mesh.position[object.moveDirection] += object.moveSpeed * delta;
       object.isMovingPositive = object.mesh.position[object.moveDirection] < object.initialPosition[object.moveDirection] + object.moveBetweenRelative.max;
     } else {
-      object.mesh.position[object.moveDirection] -= object.moveSpeed;
+      object.mesh.position[object.moveDirection] -= object.moveSpeed * delta;
       object.isMovingPositive = object.mesh.position[object.moveDirection] < object.initialPosition[object.moveDirection] + object.moveBetweenRelative.min;
     }
 
-    object.mesh.rotation[object.rotationDirection] += object.rotationSpeed;
+    object.mesh.rotation[object.rotationDirection] += object.rotationSpeed * delta;
   });
 
   renderer.render(scene, camera);
