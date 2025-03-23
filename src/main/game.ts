@@ -1,4 +1,5 @@
 import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock } from "three";
+import { PointerLockControls } from "../../node_modules/three/examples/jsm/controls/PointerLockControls";
 import { setupScene } from "./scene-setup";
 
 export enum MoveDirection {
@@ -36,46 +37,41 @@ setupScene(scene, movingObjects);
 const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 const clock = new Clock();
 
-// camera rotation limits for v0.9
-let cameraRotationPositive = false;
-const cameraRotationSpeed = 0.001;
-
 // calculate move direction for every moving object
 movingObjects.forEach((object) => {
   object.isMovingPositive = Boolean(object.initialMoveDirection);
 });
 
-camera.position.y += 2;
-camera.position.z = 5;
-
 const renderer = new WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-// document.body.appendChild(renderer.domElement);
+
+const controls = new PointerLockControls(camera, renderer.domElement);
+controls.movementSpeed = 10;
+// controls.dragToLook = true;
+camera.position.set(0, 5, 10);
+
+renderer.domElement.addEventListener("click", function () {
+  controls.lock();
+});
 
 const animate = () => {
   requestAnimationFrame(animate);
-  const delta = clock.getDelta() * 100;
-  // camera.rotation.y -= 0.001;
-
-  if (cameraRotationPositive) {
-    camera.rotation.y += cameraRotationSpeed * delta;
-    cameraRotationPositive = camera.rotation.y < Math.PI / 6;
-  } else {
-    camera.rotation.y -= cameraRotationSpeed * delta;
-    cameraRotationPositive = camera.rotation.y < -Math.PI / 6;
-  }
+  const delta = clock.getDelta();
+  const deltaMovement = delta * 100;
 
   movingObjects.forEach((object) => {
     if (object.isMovingPositive) {
-      object.mesh.position[object.moveDirection] += object.moveSpeed * delta;
+      object.mesh.position[object.moveDirection] += object.moveSpeed * deltaMovement;
       object.isMovingPositive = object.mesh.position[object.moveDirection] < object.initialPosition[object.moveDirection] + object.moveBetweenRelative.max;
     } else {
-      object.mesh.position[object.moveDirection] -= object.moveSpeed * delta;
+      object.mesh.position[object.moveDirection] -= object.moveSpeed * deltaMovement;
       object.isMovingPositive = object.mesh.position[object.moveDirection] < object.initialPosition[object.moveDirection] + object.moveBetweenRelative.min;
     }
 
-    object.mesh.rotation[object.rotationDirection] += object.rotationSpeed * delta;
+    object.mesh.rotation[object.rotationDirection] += object.rotationSpeed * deltaMovement;
   });
+
+  controls.update(delta);
 
   renderer.render(scene, camera);
 };
