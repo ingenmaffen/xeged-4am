@@ -1,3 +1,9 @@
-node_modules/*
-public/*
-package-lock.json
+# dependencies
+/.firebase
+/node_modules
+
+# testing
+/coverage
+
+# production
+/build

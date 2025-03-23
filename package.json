@@ -1,29 +1,39 @@
 {
-  "name": "shape-generator",
+  "name": "xeged-4am",
   "version": "1.0.0",
-  "description": "A random shape generator for Three.js",
-  "scripts": {
-    "start": "concurrently \"npm run bundle:watch\" \"npm run host\"",
-    "clean": "rm -rf public",
-    "bundle:watch": "npm run copy-static-files && webpack --mode=development --watch --progress",
-    "bundle:prod": "npm run copy-static-files && webpack --mode=production",
-    "copy-static-files": "npm run clean && mkdir public && cp src/index.* public/",
-    "deploy": "npm run bundle:prod && npx firebase deploy",
-    "host": "node server.js"
-  },
+  "private": true,
   "dependencies": {
+    "@types/node": "^22.13.11",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-router-dom": "7.4.0",
+    "react-scripts": "5.0.1",
     "three": "0.174.0",
-    "ts-loader": "9.5.2",
-    "typescript": "5.8.2",
-    "webpack": "5.98.0",
-    "webpack-cli": "6.0.1"
+    "typescript": "^4.9.5"
   },
-  "devDependencies": {
-    "@types/three": "0.174.0",
-    "concurrently": "9.1.2",
-    "express": "4.21.2",
-    "firebase-tools": "13.35.1"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "deploy": "npm run build && firebase deploy"
   },
-  "author": "Rabi Róbert <ingenmaffen@gmail.com",
-  "license": "MIT"
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
