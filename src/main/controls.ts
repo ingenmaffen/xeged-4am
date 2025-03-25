@@ -16,6 +16,7 @@ enum KeydownDirection {
 
 let horizontalRotation = 0;
 let verticalRotation = 0;
+let devMode = false;
 const playerMovement: PlayerMovement = {
   forward: false,
   backwards: false,
@@ -25,9 +26,10 @@ const playerMovement: PlayerMovement = {
 
 export const cameraTargetDistance = 0.2;
 
-export const setupControls = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, cameraTarget: Mesh) => {
+export const setupControls = (canvas: HTMLCanvasElement, camera: PerspectiveCamera, cameraTarget: Mesh, isDevMode = false) => {
   const cameraMoveSpeed = 0.25;
   const verticalTreshold = Math.PI * 0.45;
+  devMode = isDevMode;
 
   canvas.addEventListener("click", () => {
     canvas.requestPointerLock();
@@ -90,10 +92,12 @@ export const updatePlayerPosition = (delta: number, camera: PerspectiveCamera, c
   if (playerMovement.forward) {
     camera.position.x -= Math.sin(horizontalRotation) * playerSpeedMultiplier;
     camera.position.z -= Math.cos(horizontalRotation) * playerSpeedMultiplier;
+    camera.position.y -= devMode ? Math.sin(verticalRotation) * playerSpeedMultiplier : 0;
   }
   if (playerMovement.backwards) {
     camera.position.x += Math.sin(horizontalRotation) * playerSpeedMultiplier;
     camera.position.z += Math.cos(horizontalRotation) * playerSpeedMultiplier;
+    camera.position.y += devMode ? Math.sin(verticalRotation) * playerSpeedMultiplier : 0;
   }
   if (playerMovement.left) {
     camera.position.x -= Math.cos(horizontalRotation) * playerSpeedMultiplier;

@@ -3,9 +3,9 @@ import { setupScene } from "./scene-setup";
 import { cameraTargetDistance, setupControls, updatePlayerPosition } from "./controls";
 import { MovingObject } from "./global-types";
 
-export const initRender = () => {
+export const initRender = (isDevMode = false) => {
   window.addEventListener("resize", handleWindowResize);
-  setupControls(renderer.domElement, camera, cameraTarget);
+  setupControls(renderer.domElement, camera, cameraTarget, isDevMode);
   animate();
   return renderer.domElement;
 };
