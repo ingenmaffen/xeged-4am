@@ -85,6 +85,8 @@ export const setupControls = (canvas: HTMLCanvasElement, camera: PerspectiveCame
       }
     }
   });
+
+  // TODO: set up touch controls (movement and camera)
 };
 
 export const updatePlayerPosition = (delta: number, camera: PerspectiveCamera, cameraTarget: Mesh) => {

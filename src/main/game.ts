@@ -23,6 +23,7 @@ setupScene(scene, movingObjects);
 
 // default camera position
 // TODO: update when autosave is implemented
+// TODO: implement autosave
 camera.position.set(0, 3, 10);
 cameraTarget.visible = false;
 cameraTarget.position.set(camera.position.x, camera.position.y, camera.position.z - cameraTargetDistance);
