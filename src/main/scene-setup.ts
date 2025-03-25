@@ -1,9 +1,9 @@
-import { AmbientLight, Color, Mesh, MeshBasicMaterial, PlaneGeometry } from "three";
+import { AmbientLight, Color, Mesh, MeshBasicMaterial, PlaneGeometry, Scene } from "three";
 import { loadShape } from "./load-shape";
 import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
-import { InitialMoveDirection, MoveDirection } from "./game";
+import { InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
 
-export const setupScene = (scene, movingObjects) => {
+export const setupScene = (scene: Scene, movingObjects: MovingObject[]) => {
   scene.background = new Color(0xc816db);
 
   // let there be light

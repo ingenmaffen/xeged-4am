@@ -1,65 +1,21 @@
 import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock, BoxGeometry, MeshNormalMaterial } from "three";
 import { setupScene } from "./scene-setup";
-
-export enum MoveDirection {
-  X = "x",
-  Y = "y",
-  Z = "z",
-}
-
-export enum InitialMoveDirection {
-  Minus,
-  Plus,
-}
-
-export interface MovingObjects {
-  mesh: Mesh;
-  initialPosition: { x: number; y: number; z: number };
-  moveDirection: MoveDirection;
-  initialMoveDirection: InitialMoveDirection;
-  moveBetweenRelative: { min: number; max: number };
-  moveSpeed: number;
-  rotationDirection: MoveDirection;
-  rotationSpeed: number;
-  isMovingPositive?: boolean;
-}
-
-interface PlayerMovement {
-  forward: boolean;
-  backwards: boolean;
-  left: boolean;
-  right: boolean;
-}
-
-enum KeydownDirection {
-  FORWARD = "w",
-  BACKWARDS = "s",
-  LEFT = "a",
-  RIGHT = "d",
-}
+import { cameraTargetDistance, setupControls, updatePlayerPosition } from "./controls";
+import { MovingObject } from "./global-types";
 
 export const initRender = () => {
   window.addEventListener("resize", handleWindowResize);
-  setupControls(renderer.domElement, camera);
+  setupControls(renderer.domElement, camera, cameraTarget);
   animate();
   return renderer.domElement;
 };
 
-const movingObjects: MovingObjects[] = [];
+const movingObjects: MovingObject[] = [];
 const clock = new Clock();
 const scene = new Scene();
 const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
 const cameraTarget = new Mesh(new BoxGeometry(0.01, 0.01, 0.01), new MeshNormalMaterial({ wireframe: true }));
 const renderer = new WebGLRenderer({ antialias: true });
-const cameraTargetDistance = 0.2;
-let horizontalRotation = 0;
-let verticalRotation = 0;
-const playerMovement: PlayerMovement = {
-  forward: false,
-  backwards: false,
-  left: false,
-  right: false,
-};
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -94,7 +50,7 @@ const animate = () => {
     object.mesh.rotation[object.rotationDirection] += object.rotationSpeed * deltaMovement;
   });
 
-  updatePlayerPosition(deltaMovement);
+  updatePlayerPosition(deltaMovement, camera, cameraTarget);
   camera.lookAt(cameraTarget.position);
   renderer.render(scene, camera);
 };
@@ -107,93 +63,4 @@ const handleWindowResize = () => {
 
   camera.aspect = aspectRatio;
   camera.updateProjectionMatrix();
-};
-
-// move to separate file
-
-const setupControls = (canvas, camera) => {
-  const cameraMoveSpeed = 0.25;
-  const verticalTreshold = Math.PI * 0.45;
-
-  canvas.addEventListener("click", () => {
-    canvas.requestPointerLock();
-  });
-
-  canvas.addEventListener("mousemove", (event) => {
-    if (document.pointerLockElement === canvas) {
-      horizontalRotation -= event.movementX * (Math.PI / 180) * cameraMoveSpeed;
-      verticalRotation += event.movementY * (Math.PI / 180) * cameraMoveSpeed;
-      horizontalRotation = horizontalRotation % (Math.PI * 2);
-      verticalRotation = verticalRotation % Math.PI;
-      verticalRotation = verticalRotation < -verticalTreshold ? -verticalTreshold : verticalRotation;
-      verticalRotation = verticalRotation > verticalTreshold ? verticalTreshold : verticalRotation;
-
-      updateCameraPosition(horizontalRotation, verticalRotation, cameraTarget, camera);
-    }
-  });
-
-  document.addEventListener("keydown", (event) => {
-    if (document.pointerLockElement === canvas) {
-      switch (event.key) {
-        case KeydownDirection.FORWARD:
-          playerMovement.forward = true;
-          break;
-        case KeydownDirection.BACKWARDS:
-          playerMovement.backwards = true;
-          break;
-        case KeydownDirection.LEFT:
-          playerMovement.left = true;
-          break;
-        case KeydownDirection.RIGHT:
-          playerMovement.right = true;
-          break;
-      }
-    }
-  });
-
-  document.addEventListener("keyup", (event) => {
-    if (document.pointerLockElement === canvas) {
-      switch (event.key) {
-        case KeydownDirection.FORWARD:
-          playerMovement.forward = false;
-          break;
-        case KeydownDirection.BACKWARDS:
-          playerMovement.backwards = false;
-          break;
-        case KeydownDirection.LEFT:
-          playerMovement.left = false;
-          break;
-        case KeydownDirection.RIGHT:
-          playerMovement.right = false;
-          break;
-      }
-    }
-  });
-};
-
-const updatePlayerPosition = (delta) => {
-  const playerSpeedMultiplier = 0.1 * delta;
-  if (playerMovement.forward) {
-    camera.position.x -= Math.sin(horizontalRotation) * playerSpeedMultiplier;
-    camera.position.z -= Math.cos(horizontalRotation) * playerSpeedMultiplier;
-  }
-  if (playerMovement.backwards) {
-    camera.position.x += Math.sin(horizontalRotation) * playerSpeedMultiplier;
-    camera.position.z += Math.cos(horizontalRotation) * playerSpeedMultiplier;
-  }
-  if (playerMovement.left) {
-    camera.position.x -= Math.cos(horizontalRotation) * playerSpeedMultiplier;
-    camera.position.z += Math.sin(horizontalRotation) * playerSpeedMultiplier;
-  }
-  if (playerMovement.right) {
-    camera.position.x += Math.cos(horizontalRotation) * playerSpeedMultiplier;
-    camera.position.z -= Math.sin(horizontalRotation) * playerSpeedMultiplier;
-  }
-  updateCameraPosition(horizontalRotation, verticalRotation, cameraTarget, camera);
-};
-
-const updateCameraPosition = (horizontalRotation: number, verticalRotation: number, cameraTarget: Mesh, camera: PerspectiveCamera) => {
-  cameraTarget.position.x = camera.position.x - cameraTargetDistance * Math.sin(horizontalRotation);
-  cameraTarget.position.y = camera.position.y - cameraTargetDistance * Math.sin(verticalRotation);
-  cameraTarget.position.z = camera.position.z - cameraTargetDistance * Math.cos(horizontalRotation);
 };
