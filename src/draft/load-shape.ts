@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Group, Mesh, MeshBasicMaterial, MeshLambertMaterial, MeshPhongMaterial } from "three";
+import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial } from "three";
 
 export const loadShape = (vertexData, color, wireframe = false, doubleSide = false, indexData = null) => {
   const geometry = new BufferGeometry();

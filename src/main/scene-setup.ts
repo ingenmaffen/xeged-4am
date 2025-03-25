@@ -1,6 +1,6 @@
 import { AmbientLight, Color, Mesh, MeshBasicMaterial, PlaneGeometry } from "three";
 import { loadShape } from "./load-shape";
-import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft, wheel } from "./objects";
+import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
 import { InitialMoveDirection, MoveDirection } from "./game";
 
 export const setupScene = (scene, movingObjects) => {
