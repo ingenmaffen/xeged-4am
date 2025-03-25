@@ -1,4 +1,5 @@
-import { AmbientLight, Color, Mesh, MeshBasicMaterial, PlaneGeometry, Scene } from "three";
+import { AmbientLight, Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, PlaneGeometry, Scene, TextureLoader } from "three";
+import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
 import { loadShape } from "./load-shape";
 import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
 import { InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
@@ -83,6 +84,31 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[]) => {
   bush2Mesh.position.x = -8;
   bush2Mesh.position.y = 2;
   scene.add(bush2Mesh);
+
+  // ugly banana
+  new TextureLoader().load("/assets/banana/banana.jpg", (bananaTexture) => {
+    const bananaMaterial = new MeshPhongMaterial({ map: bananaTexture });
+    // const normalMaterial = new MeshNormalMaterial();
+    const objectLoader = new OBJLoader();
+    objectLoader.load("/assets/banana/banana.obj", (bananaMesh: Mesh) => {
+      const banana = new Mesh(bananaMesh.children[0]["geometry"].clone(), bananaMaterial);
+      banana.position.set(0, -2, -10);
+      banana.rotation.x = -Math.PI / 2;
+      scaleMesh(banana, 0.5);
+      scene.add(banana);
+
+      movingObjects.push({
+        mesh: banana,
+        initialPosition: { x: 0, y: -2, z: -10 },
+        moveDirection: MoveDirection.Y,
+        initialMoveDirection: InitialMoveDirection.Plus,
+        moveBetweenRelative: { min: -1, max: 1 },
+        moveSpeed: 0.015,
+        rotationDirection: MoveDirection.Z,
+        rotationSpeed: 0.01,
+      });
+    });
+  });
 };
 
 const scaleMesh = (mesh, scale) => {
