@@ -5,29 +5,40 @@ import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./ob
 import { BananaWrapper, InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
 
 export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
-  scene.background = new Color(0xc816db);
+  scene.background = new Color(0xc042df);
 
   // let there be light
   const light = new AmbientLight(0xffffff, 2.8);
   scene.add(light);
 
   // add floor
-  const geometry = new PlaneGeometry(100, 100);
+  const geometry = new PlaneGeometry(500, 500);
   const material = new MeshBasicMaterial({ color: 0xd6b511 });
   const plane = new Mesh(geometry, material);
   plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
 
   // hill on the left side of the initial view
-  const hillMesh = loadShape(hill.vertexData, 0xd6b511, false, true, hill.indexData);
-  hillMesh.position.x = -20;
-  hillMesh.position.z = -40;
+  const hillMesh = loadShape(hill.vertexData, hill.indexData, {
+    color: 0xd6b511,
+    doubleSide: true,
+    wireframe: true,
+    wireframeColor: 0x000000,
+  });
+  hillMesh.position.x = -80;
+  hillMesh.position.z = -100;
+  hillMesh.position.y = -20;
   hillMesh.rotation.x = Math.PI / 2;
-  scaleMesh(hillMesh, 5);
+  hillMesh.rotation.z = Math.PI / 3;
+  scaleMesh(hillMesh, 25);
   scene.add(hillMesh);
 
   // flying object
-  const skyObject1 = loadShape(objectInTheSky1.vertexData, 0xff0000, true, true, objectInTheSky1.indexData);
+  const skyObject1 = loadShape(objectInTheSky1.vertexData, objectInTheSky1.indexData, {
+    color: 0xff0000,
+    doubleSide: true,
+    wireframe: true,
+  });
   const skyObject1InitialPosition = { x: 2, y: 10, z: -20 };
   skyObject1.position.z = skyObject1InitialPosition.z;
   skyObject1.position.y = skyObject1InitialPosition.y;
@@ -48,7 +59,11 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   });
 
   // bush to the right
-  const bush1Mesh = loadShape(bush1.vertexData, 0x006400, true, false);
+  const bush1Mesh = loadShape(bush1.vertexData, null, {
+    color: 0x006400,
+    doubleSide: false,
+    wireframe: true,
+  });
   scaleMesh(bush1Mesh, 0.25);
   bush1Mesh.rotation.y = Math.PI / 2;
   bush1Mesh.position.z = -5;
@@ -57,7 +72,11 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   scene.add(bush1Mesh);
 
   // spinning shit
-  const spinningShit = loadShape(spinningShitOnTheLeft.vertexData, 0xdb0f53, false, true, spinningShitOnTheLeft.indexData);
+  const spinningShit = loadShape(spinningShitOnTheLeft.vertexData, spinningShitOnTheLeft.indexData, {
+    color: 0xdb0f53,
+    wireframe: false,
+    doubleSide: true,
+  });
   spinningShit.position.z = -10;
   spinningShit.position.x = -10;
   spinningShit.position.y = 5;
@@ -77,7 +96,11 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   });
 
   // bush on the far left
-  const bush2Mesh = loadShape(bush2.vertexData, 0x006400, true, false);
+  const bush2Mesh = loadShape(bush2.vertexData, null, {
+    color: 0x006400,
+    wireframe: true,
+    doubleSide: false,
+  });
   scaleMesh(bush2Mesh, 0.25);
   bush2Mesh.rotation.y = Math.PI / 3;
   bush2Mesh.position.z = 2;
@@ -91,7 +114,7 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
     const objectLoader = new OBJLoader();
     objectLoader.load("/assets/banana/banana.obj", (bananaMesh: Mesh) => {
       const banana = new Mesh(bananaMesh.children[0]["geometry"].clone(), bananaMaterial);
-      const bananaPosition = { x: 0, y: -2, z: -10 };
+      const bananaPosition = { x: 20, y: -2, z: -10 };
       banana.position.set(bananaPosition.x, bananaPosition.y, bananaPosition.z);
       banana.rotation.x = -Math.PI / 2;
       scaleMesh(banana, 0.5);

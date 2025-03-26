@@ -27,3 +27,11 @@ export interface BananaWrapper {
   bananaMesh: Mesh;
   colliderMesh: Mesh;
 }
+
+export interface MeshOptions {
+  color?: number;
+  wireframe?: boolean;
+  wireframeColor?: number;
+  doubleSide?: boolean;
+  dimensions?: number;
+}

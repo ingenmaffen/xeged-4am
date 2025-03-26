@@ -1,4 +1,4 @@
-import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock, BoxGeometry, MeshNormalMaterial, BoxHelper } from "three";
+import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock, BoxGeometry, MeshNormalMaterial } from "three";
 import { setupScene } from "./scene-setup";
 import { cameraTargetDistance, setupControls, updatePlayerPosition } from "./controls";
 import { BananaWrapper, MovingObject } from "./global-types";
@@ -29,7 +29,7 @@ setupScene(scene, movingObjects, bananaWrapper);
 // default camera position
 // TODO: update when autosave is implemented
 // TODO: implement autosave
-camera.position.set(0, 3, 10);
+camera.position.set(20, 3, 10);
 cameraTarget.visible = false;
 cameraTarget.position.set(camera.position.x, camera.position.y, camera.position.z - cameraTargetDistance);
 scene.add(cameraTarget);
