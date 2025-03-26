@@ -22,3 +22,8 @@ export interface MovingObject {
   rotationSpeed: number;
   isMovingPositive?: boolean;
 }
+
+export interface BananaWrapper {
+  bananaMesh: Mesh;
+  colliderMesh: Mesh;
+}

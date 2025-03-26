@@ -1,7 +1,7 @@
-import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock, BoxGeometry, MeshNormalMaterial } from "three";
+import { Mesh, PerspectiveCamera, Scene, WebGLRenderer, Clock, BoxGeometry, MeshNormalMaterial, BoxHelper } from "three";
 import { setupScene } from "./scene-setup";
 import { cameraTargetDistance, setupControls, updatePlayerPosition } from "./controls";
-import { MovingObject } from "./global-types";
+import { BananaWrapper, MovingObject } from "./global-types";
 
 export const initRender = (isDevMode = false) => {
   window.addEventListener("resize", handleWindowResize);
@@ -10,16 +10,21 @@ export const initRender = (isDevMode = false) => {
   return renderer.domElement;
 };
 
+const audio = new Audio("/assets/pickup_distorted.mp3");
+const bananaWrapper: BananaWrapper = {
+  bananaMesh: null,
+  colliderMesh: null,
+};
 const movingObjects: MovingObject[] = [];
 const clock = new Clock();
 const scene = new Scene();
 const camera = new PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-const cameraTarget = new Mesh(new BoxGeometry(0.01, 0.01, 0.01), new MeshNormalMaterial({ wireframe: true }));
+const cameraTarget = new Mesh(new BoxGeometry(0.01, 0.01, 0.01), new MeshNormalMaterial({ visible: false }));
 const renderer = new WebGLRenderer({ antialias: true });
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
-setupScene(scene, movingObjects);
+setupScene(scene, movingObjects, bananaWrapper);
 
 // default camera position
 // TODO: update when autosave is implemented
@@ -33,6 +38,10 @@ scene.add(cameraTarget);
 movingObjects.forEach((object) => {
   object.isMovingPositive = Boolean(object.initialMoveDirection);
 });
+
+const playerColliderBox = new BoxGeometry(1, 1, 1);
+const playerColliderMesh = new Mesh(playerColliderBox, new MeshNormalMaterial({ visible: false }));
+scene.add(playerColliderMesh);
 
 const animate = () => {
   requestAnimationFrame(animate);
@@ -52,8 +61,42 @@ const animate = () => {
   });
 
   updatePlayerPosition(deltaMovement, camera, cameraTarget);
+  playerColliderMesh.position.set(camera.position.x, camera.position.y, camera.position.z);
+
+  if (bananaWrapper.colliderMesh && getPlayerCollider().intersectsBox(getObjectCollider(bananaWrapper.colliderMesh))) {
+    playSfx();
+    removeBanana();
+  }
+
   camera.lookAt(cameraTarget.position);
   renderer.render(scene, camera);
+};
+
+const getPlayerCollider = () => {
+  playerColliderMesh.geometry.computeBoundingBox();
+  playerColliderMesh.updateMatrixWorld();
+  const playerCollider = playerColliderMesh.geometry.boundingBox.clone();
+  playerCollider.applyMatrix4(playerColliderMesh.matrixWorld);
+  return playerCollider;
+};
+
+const getObjectCollider = (object: Mesh) => {
+  object.geometry.computeBoundingBox();
+  object.updateMatrixWorld();
+  const objectCollider = object.geometry.boundingBox.clone();
+  objectCollider.applyMatrix4(object.matrixWorld);
+  return objectCollider;
+};
+
+const removeBanana = () => {
+  scene.remove(bananaWrapper.colliderMesh);
+  scene.remove(bananaWrapper.bananaMesh);
+  bananaWrapper.colliderMesh = null;
+  bananaWrapper.bananaMesh = null;
+};
+
+const playSfx = () => {
+  audio.play();
 };
 
 const handleWindowResize = () => {

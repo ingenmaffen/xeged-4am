@@ -1,10 +1,10 @@
-import { AmbientLight, Color, Mesh, MeshBasicMaterial, MeshPhongMaterial, PlaneGeometry, Scene, TextureLoader } from "three";
+import { AmbientLight, BoxGeometry, Color, Mesh, MeshBasicMaterial, MeshNormalMaterial, MeshPhongMaterial, PlaneGeometry, Scene, TextureLoader } from "three";
 import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
 import { loadShape } from "./load-shape";
 import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
-import { InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
+import { BananaWrapper, InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
 
-export const setupScene = (scene: Scene, movingObjects: MovingObject[]) => {
+export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
   scene.background = new Color(0xc816db);
 
   // let there be light
@@ -88,7 +88,6 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[]) => {
   // ugly banana
   new TextureLoader().load("/assets/banana/banana.jpg", (bananaTexture) => {
     const bananaMaterial = new MeshPhongMaterial({ map: bananaTexture });
-    // const normalMaterial = new MeshNormalMaterial();
     const objectLoader = new OBJLoader();
     objectLoader.load("/assets/banana/banana.obj", (bananaMesh: Mesh) => {
       const banana = new Mesh(bananaMesh.children[0]["geometry"].clone(), bananaMaterial);
@@ -96,6 +95,13 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[]) => {
       banana.rotation.x = -Math.PI / 2;
       scaleMesh(banana, 0.5);
       scene.add(banana);
+
+      const bananaCollider = new Mesh(new BoxGeometry(4, 4, 2), new MeshNormalMaterial({ visible: false }));
+      bananaCollider.position.set(0, 2, -10);
+      scene.add(bananaCollider);
+
+      bananaWrapper.bananaMesh = banana;
+      bananaWrapper.colliderMesh = bananaCollider;
 
       movingObjects.push({
         mesh: banana,
