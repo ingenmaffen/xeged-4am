@@ -91,13 +91,14 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
     const objectLoader = new OBJLoader();
     objectLoader.load("/assets/banana/banana.obj", (bananaMesh: Mesh) => {
       const banana = new Mesh(bananaMesh.children[0]["geometry"].clone(), bananaMaterial);
-      banana.position.set(0, -2, -10);
+      const bananaPosition = { x: 0, y: -2, z: -10 };
+      banana.position.set(bananaPosition.x, bananaPosition.y, bananaPosition.z);
       banana.rotation.x = -Math.PI / 2;
       scaleMesh(banana, 0.5);
       scene.add(banana);
 
       const bananaCollider = new Mesh(new BoxGeometry(4, 4, 2), new MeshNormalMaterial({ visible: false }));
-      bananaCollider.position.set(0, 2, -10);
+      bananaCollider.position.set(bananaPosition.x, bananaPosition.y + 4, bananaPosition.z);
       scene.add(bananaCollider);
 
       bananaWrapper.bananaMesh = banana;
@@ -105,7 +106,7 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
 
       movingObjects.push({
         mesh: banana,
-        initialPosition: { x: 0, y: -2, z: -10 },
+        initialPosition: bananaPosition,
         moveDirection: MoveDirection.Y,
         initialMoveDirection: InitialMoveDirection.Plus,
         moveBetweenRelative: { min: -1, max: 1 },
