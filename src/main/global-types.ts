@@ -35,3 +35,14 @@ export interface MeshOptions {
   doubleSide?: boolean;
   dimensions?: number;
 }
+
+export interface MinimalVector3 {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface VertexData {
+  position: MinimalVector3;
+  rotation: MinimalVector3;
+}

@@ -1,8 +1,21 @@
-import { AmbientLight, BoxGeometry, Color, Mesh, MeshBasicMaterial, MeshNormalMaterial, MeshPhongMaterial, PlaneGeometry, Scene, TextureLoader } from "three";
+import {
+  AmbientLight,
+  BoxGeometry,
+  Color,
+  Group,
+  Mesh,
+  MeshBasicMaterial,
+  MeshNormalMaterial,
+  MeshPhongMaterial,
+  PlaneGeometry,
+  Scene,
+  TextureLoader,
+} from "three";
 import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
-import { loadShape } from "./load-shape";
+import { loadEqualVertexShape, loadShape } from "./load-shape";
 import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
-import { BananaWrapper, InitialMoveDirection, MoveDirection, MovingObject } from "./global-types";
+import { BananaWrapper, InitialMoveDirection, MinimalVector3, MoveDirection, MovingObject } from "./global-types";
+import { roseBase, roseHead } from "./objects/rose";
 
 export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
   scene.background = new Color(0xc042df);
@@ -139,6 +152,35 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
       });
     });
   });
+
+  // rose
+  const rose = new Group();
+  const rosePosition: MinimalVector3 = {
+    x: 20,
+    y: 0,
+    z: -2,
+  };
+  const roseBaseMesh = loadEqualVertexShape(roseBase, {
+    color: 0x158226,
+    wireframe: true,
+    doubleSide: true,
+    wireframeColor: 0x0c4a16,
+  });
+  scaleMesh(roseBaseMesh, 0.05);
+  roseBaseMesh.position.set(rosePosition.x, rosePosition.y, rosePosition.z);
+  rose.add(roseBaseMesh);
+
+  const roseHeadMesh = loadShape(roseHead.vertexData, null, {
+    color: 0xae0f0f,
+    wireframe: true,
+    doubleSide: true,
+    wireframeColor: 0x400000,
+  });
+  scaleMesh(roseHeadMesh, 0.05);
+  roseHeadMesh.position.set(rosePosition.x, rosePosition.y + 2.1, rosePosition.z);
+  rose.add(roseHeadMesh);
+
+  scene.add(rose);
 };
 
 const scaleMesh = (mesh, scale) => {
