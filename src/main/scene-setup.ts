@@ -15,7 +15,7 @@ import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
 import { loadEqualVertexShape, loadShape } from "./load-shape";
 import { bush1, bush2, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
 import { BananaWrapper, InitialMoveDirection, MinimalVector3, MoveDirection, MovingObject } from "./global-types";
-import { roseBase, roseHead } from "./objects/rose";
+import { roseBase, roseHead, roseLeaf1, roseLeaf4 } from "./objects/rose";
 import { foliage } from "./objects/foliage";
 import { hill2 } from "./objects/hill";
 
@@ -209,6 +209,30 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   scaleMesh(roseHeadMesh, 0.05);
   roseHeadMesh.position.set(rosePosition.x, rosePosition.y + 1.5, rosePosition.z);
   rose.add(roseHeadMesh);
+
+  const roseLeaf1Mesh = loadShape(roseLeaf1.vertexData, roseLeaf1.indexData, {
+    color: 0x158226,
+    wireframe: true,
+    doubleSide: true,
+    wireframeColor: 0x0c4a16,
+  });
+  scaleMesh(roseLeaf1Mesh, 0.15);
+  roseLeaf1Mesh.position.set(rosePosition.x + 0.15, rosePosition.y + 0.8, rosePosition.z);
+  roseLeaf1Mesh.rotation.z = -Math.PI / 4;
+  rose.add(roseLeaf1Mesh);
+
+  const roseLeaf4Mesh = loadShape(roseLeaf4.vertexData, roseLeaf4.indexData, {
+    color: 0x158226,
+    wireframe: true,
+    doubleSide: true,
+    wireframeColor: 0x0c4a16,
+  });
+  scaleMesh(roseLeaf4Mesh, 0.075);
+  roseLeaf4Mesh.position.set(rosePosition.x + 0.075, rosePosition.y + 0.65, rosePosition.z);
+  roseLeaf4Mesh.rotation.y = Math.PI / 3;
+  roseLeaf4Mesh.rotation.x = Math.PI / 2;
+  roseLeaf4Mesh.rotation.z = Math.PI / 4;
+  rose.add(roseLeaf4Mesh);
 
   scene.add(rose);
 };
