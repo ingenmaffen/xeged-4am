@@ -16,6 +16,7 @@ import { loadEqualVertexShape, loadShape } from "./load-shape";
 import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
 import { BananaWrapper, InitialMoveDirection, MinimalVector3, MoveDirection, MovingObject } from "./global-types";
 import { roseBase, roseHead } from "./objects/rose";
+import { foliage } from "./objects/foliage";
 
 export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
   scene.background = new Color(0xc042df);
@@ -30,6 +31,32 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   const plane = new Mesh(geometry, material);
   plane.rotation.x = -Math.PI / 2;
   scene.add(plane);
+
+  // foliage
+  const foliageMesh = loadEqualVertexShape(foliage, {
+    color: 0x968773,
+    wireframe: false,
+    doubleSide: false,
+    backSide: true,
+  });
+  scaleMesh(foliageMesh, 2);
+  foliageMesh.rotation.x = Math.PI / 2;
+  foliageMesh.position.set(-250, 0.01, -250);
+  foliageMesh.position.y += 0.01;
+  scene.add(foliageMesh);
+
+  const foliageMesh2 = loadEqualVertexShape(foliage, {
+    color: 0x81653f,
+    wireframe: false,
+    doubleSide: false,
+    backSide: true,
+  });
+  scaleMesh(foliageMesh2, 2);
+  foliageMesh2.rotation.x = Math.PI / 2;
+  foliageMesh2.rotation.z = Math.PI / 2;
+  foliageMesh2.position.set(250, 0.01, -250);
+  foliageMesh2.position.y += 0.01;
+  scene.add(foliageMesh2);
 
   // hill on the left side of the initial view
   const hillMesh = loadShape(hill.vertexData, hill.indexData, {
@@ -167,6 +194,8 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
     wireframeColor: 0x0c4a16,
   });
   scaleMesh(roseBaseMesh, 0.05);
+  roseBaseMesh.scale.y *= 2;
+  roseBaseMesh.rotation.y = Math.PI / 2;
   roseBaseMesh.position.set(rosePosition.x, rosePosition.y, rosePosition.z);
   rose.add(roseBaseMesh);
 
@@ -177,7 +206,7 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
     wireframeColor: 0x400000,
   });
   scaleMesh(roseHeadMesh, 0.05);
-  roseHeadMesh.position.set(rosePosition.x, rosePosition.y + 2.1, rosePosition.z);
+  roseHeadMesh.position.set(rosePosition.x, rosePosition.y + 1.5, rosePosition.z);
   rose.add(roseHeadMesh);
 
   scene.add(rose);

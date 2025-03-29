@@ -1,4 +1,4 @@
-import { BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial } from "three";
+import { BackSide, BufferAttribute, BufferGeometry, DoubleSide, FrontSide, Group, Mesh, MeshBasicMaterial, MeshPhongMaterial } from "three";
 import { MeshOptions, VertexData } from "./global-types";
 
 const equilateralVertexCoordinates = new Float32Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Math.sqrt(0.75), 0.5, 0.0]);
@@ -33,7 +33,8 @@ export const loadShape = (vertexData: number[], indexData: number[] = null, mesh
 
 export const loadEqualVertexShape = (vertexData: VertexData[], meshOptions?: MeshOptions) => {
   const options = setupOptions(meshOptions);
-  const material = new MeshBasicMaterial({ color: options.color, side: options.doubleSide ? DoubleSide : FrontSide });
+  const side = options.doubleSide ? DoubleSide : options.backSide ? BackSide : FrontSide;
+  const material = new MeshBasicMaterial({ color: options.color, side });
 
   const group = new Group();
 
@@ -69,5 +70,6 @@ const setupOptions = (options?: MeshOptions) => {
     wireframeColor: options?.wireframeColor ?? 0xffffff,
     doubleSide: options?.doubleSide ?? false,
     dimensions: options?.dimensions ?? 3,
+    backSide: options?.backSide ?? false,
   };
 };

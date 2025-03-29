@@ -34,6 +34,7 @@ export interface MeshOptions {
   wireframeColor?: number;
   doubleSide?: boolean;
   dimensions?: number;
+  backSide?: boolean;
 }
 
 export interface MinimalVector3 {
