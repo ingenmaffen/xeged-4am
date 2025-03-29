@@ -228,7 +228,7 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
     wireframeColor: 0x0c4a16,
   });
   scaleMesh(roseLeaf4Mesh, 0.075);
-  roseLeaf4Mesh.position.set(rosePosition.x + 0.075, rosePosition.y + 0.65, rosePosition.z);
+  roseLeaf4Mesh.position.set(rosePosition.x + 0.075, rosePosition.y + 0.65, rosePosition.z - 0.1);
   roseLeaf4Mesh.rotation.y = Math.PI / 3;
   roseLeaf4Mesh.rotation.x = Math.PI / 2;
   roseLeaf4Mesh.rotation.z = Math.PI / 4;
