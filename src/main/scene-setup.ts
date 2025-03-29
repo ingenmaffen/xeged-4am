@@ -13,10 +13,11 @@ import {
 } from "three";
 import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
 import { loadEqualVertexShape, loadShape } from "./load-shape";
-import { bush1, bush2, hill, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
+import { bush1, bush2, objectInTheSky1, spinningShitOnTheLeft } from "./objects";
 import { BananaWrapper, InitialMoveDirection, MinimalVector3, MoveDirection, MovingObject } from "./global-types";
 import { roseBase, roseHead } from "./objects/rose";
 import { foliage } from "./objects/foliage";
+import { hill2 } from "./objects/hill";
 
 export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
   scene.background = new Color(0xc042df);
@@ -55,22 +56,22 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   foliageMesh2.rotation.x = Math.PI / 2;
   foliageMesh2.rotation.z = Math.PI / 2;
   foliageMesh2.position.set(250, 0.01, -250);
-  foliageMesh2.position.y += 0.01;
+  foliageMesh2.position.y += 0.02;
   scene.add(foliageMesh2);
 
   // hill on the left side of the initial view
-  const hillMesh = loadShape(hill.vertexData, hill.indexData, {
+  const hillMesh = loadShape(hill2.vertexData, hill2.indexData, {
     color: 0xd6b511,
     doubleSide: true,
     wireframe: true,
     wireframeColor: 0x000000,
   });
-  hillMesh.position.x = -80;
+  hillMesh.position.x = -160;
   hillMesh.position.z = -100;
-  hillMesh.position.y = -20;
-  hillMesh.rotation.x = Math.PI / 2;
-  hillMesh.rotation.z = Math.PI / 3;
-  scaleMesh(hillMesh, 25);
+  hillMesh.position.y = 20;
+  hillMesh.rotation.y = Math.PI / 4;
+  // hillMesh.rotation.z = Math.PI / 3;
+  scaleMesh(hillMesh, 0.4);
   scene.add(hillMesh);
 
   // flying object
@@ -183,9 +184,9 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   // rose
   const rose = new Group();
   const rosePosition: MinimalVector3 = {
-    x: 20,
+    x: 0,
     y: 0,
-    z: -2,
+    z: 80,
   };
   const roseBaseMesh = loadEqualVertexShape(roseBase, {
     color: 0x158226,
