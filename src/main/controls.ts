@@ -90,7 +90,8 @@ export const setupControls = (canvas: HTMLCanvasElement, camera: PerspectiveCame
 };
 
 export const updatePlayerPosition = (delta: number, camera: PerspectiveCamera, cameraTarget: Mesh) => {
-  const playerSpeedMultiplier = 0.1 * delta;
+  let playerSpeedMultiplier = 0.1 * delta;
+  playerSpeedMultiplier *= devMode ? 10 : 1;
   if (playerMovement.forward) {
     camera.position.x -= Math.sin(horizontalRotation) * playerSpeedMultiplier;
     camera.position.z -= Math.cos(horizontalRotation) * playerSpeedMultiplier;
