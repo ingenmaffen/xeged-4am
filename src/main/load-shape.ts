@@ -15,6 +15,7 @@ export const loadShape = (vertexData: number[], indexData: number[] = null, mesh
   }
 
   const material = new MeshPhongMaterial({ color: options.color, side: options.doubleSide ? DoubleSide : FrontSide });
+  geometry.computeVertexNormals();
   const mesh = new Mesh(geometry, material);
 
   if (options.wireframe) {

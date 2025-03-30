@@ -1,15 +1,21 @@
 import {
   AmbientLight,
   BoxGeometry,
+  BufferGeometry,
   Color,
   Group,
+  IcosahedronGeometry,
+  Line,
+  LineBasicMaterial,
   Mesh,
   MeshBasicMaterial,
   MeshNormalMaterial,
   MeshPhongMaterial,
   PlaneGeometry,
+  PointLight,
   Scene,
   TextureLoader,
+  Vector3,
 } from "three";
 import { OBJLoader } from "../../node_modules/three/examples/jsm/Addons";
 import { loadEqualVertexShape, loadShape } from "./load-shape";
@@ -18,6 +24,7 @@ import { BananaWrapper, InitialMoveDirection, MinimalVector3, MoveDirection, Mov
 import { roseBase, roseHead, roseLeaf1, roseLeaf4 } from "./objects/rose";
 import { foliage } from "./objects/foliage";
 import { hill2 } from "./objects/hill";
+import { pyramid } from "./objects/pyramid";
 
 export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWrapper: BananaWrapper) => {
   scene.background = new Color(0xc042df);
@@ -235,6 +242,54 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   rose.add(roseLeaf4Mesh);
 
   scene.add(rose);
+
+  // pyramid
+  const pyramidMesh = loadShape(pyramid.vertexData, pyramid.indexData, {
+    color: 0xd6b511,
+    wireframe: true,
+    doubleSide: true,
+    wireframeColor: 0x000000,
+  });
+  scaleMesh(pyramidMesh, 125);
+  pyramidMesh.position.set(-225, 0.05, 100);
+  scene.add(pyramidMesh);
+
+  const discoBall = new Group();
+  const discoBallSize = 5;
+  const discoBallPosition = { x: -162.5, y: 25, z: 162.5 };
+  const discoBallMesh = new Mesh(new IcosahedronGeometry(discoBallSize, 1), new MeshNormalMaterial());
+  const discoBallWireframe = new Mesh(new IcosahedronGeometry(discoBallSize, 1), new MeshBasicMaterial({ wireframe: true, color: 0xffffff }));
+  discoBall.add(discoBallMesh);
+  discoBall.add(discoBallWireframe);
+  discoBall.position.set(discoBallPosition.x, discoBallPosition.y, discoBallPosition.z);
+
+  movingObjects.push({
+    mesh: discoBall,
+    initialPosition: discoBallPosition,
+    moveDirection: MoveDirection.Y,
+    initialMoveDirection: InitialMoveDirection.Plus,
+    moveBetweenRelative: { min: -1, max: 1 },
+    moveSpeed: 0,
+    rotationDirection: MoveDirection.Y,
+    rotationSpeed: 0.005,
+  });
+  scene.add(discoBall);
+
+  const discoBallLine = new Line(
+    new BufferGeometry().setFromPoints([
+      new Vector3(discoBallPosition.x, 125 * Math.sqrt(0.5), discoBallPosition.z),
+      new Vector3(discoBallPosition.x, discoBallPosition.y, discoBallPosition.z),
+    ]),
+    new LineBasicMaterial({
+      color: 0x000000,
+    })
+  );
+  scene.add(discoBallLine);
+
+  const discoBallLight = new PointLight(0xffffff, 10, 75, 1);
+  discoBallLight.power = 2500;
+  discoBallLight.position.set(discoBallPosition.x, discoBallPosition.y, discoBallPosition.z);
+  scene.add(discoBallLight);
 };
 
 const scaleMesh = (mesh, scale) => {
