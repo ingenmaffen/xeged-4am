@@ -10,7 +10,7 @@ export const initRender = (isDevMode = false) => {
   return renderer.domElement;
 };
 
-const audio = new Audio("/assets/pickup_distorted.mp3");
+const audio = new Audio("/assets/rotating_banana_sfx.wav");
 const bananaWrapper: BananaWrapper = {
   bananaMesh: null,
   colliderMesh: null,

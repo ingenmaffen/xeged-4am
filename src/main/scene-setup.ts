@@ -157,12 +157,12 @@ export const setupScene = (scene: Scene, movingObjects: MovingObject[], bananaWr
   scene.add(bush2Mesh);
 
   // ugly banana
+  const bananaPosition = { x: -225, y: -2, z: -150 };
   new TextureLoader().load("/assets/banana/banana.jpg", (bananaTexture) => {
     const bananaMaterial = new MeshPhongMaterial({ map: bananaTexture });
     const objectLoader = new OBJLoader();
     objectLoader.load("/assets/banana/banana.obj", (bananaMesh: Mesh) => {
       const banana = new Mesh(bananaMesh.children[0]["geometry"].clone(), bananaMaterial);
-      const bananaPosition = { x: 20, y: -2, z: -10 };
       banana.position.set(bananaPosition.x, bananaPosition.y, bananaPosition.z);
       banana.rotation.x = -Math.PI / 2;
       scaleMesh(banana, 0.5);

@@ -1,6 +1,6 @@
 {
   "name": "xeged-4am",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@types/node": "^22.13.11",
