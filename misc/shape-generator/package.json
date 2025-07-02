@@ -1,0 +1,26 @@
+{
+  "name": "shape-generator",
+  "version": "1.0.0",
+  "description": "A random shape generator for Three.js",
+  "scripts": {
+    "start": "concurrently \"npm run bundle:watch\" \"npm run host\"",
+    "clean": "rm -rf public",
+    "bundle:watch": "npm run copy-static-files && webpack --mode=development --watch --progress",
+    "copy-static-files": "npm run clean && mkdir public && cp src/index.* public/",
+    "host": "node server.js"
+  },
+  "dependencies": {
+    "three": "0.174.0",
+    "ts-loader": "9.5.2",
+    "typescript": "5.8.2",
+    "webpack": "5.98.0",
+    "webpack-cli": "6.0.1"
+  },
+  "devDependencies": {
+    "@types/three": "0.174.0",
+    "concurrently": "9.1.2",
+    "express": "4.21.2"
+  },
+  "author": "Rabi Róbert <ingenmaffen@gmail.com",
+  "license": "MIT"
+}
