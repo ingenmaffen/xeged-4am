@@ -157,19 +157,14 @@ export const updatePlayerPosition = (delta: number, camera: PerspectiveCamera, c
       // player move
       const movementX = touch.targetX - touch.startX;
       const movementY = touch.targetY - touch.startY;
-      const distance = Math.sqrt(Math.pow(movementX, 2) + Math.pow(movementY, 2));
-      let direction = Math.asin(movementY / distance) / Math.abs(Math.asin(movementY / distance));
       const moveWeigthX = movementX > radius ? movementX / Math.abs(movementX) : movementX / radius;
       const moveWeigthY = movementY > radius ? movementY / Math.abs(movementY) : movementY / radius;
+      const degree = Math.atan(moveWeigthY / moveWeigthX);
+      const direction = degree / Math.abs(degree);
 
-      // TODO: fix
-      if (Number.isNaN(direction)) {
-        direction = 0;
-      }
-
-      camera.position.x += moveWeigthX * playerSpeedMultiplier;
-      camera.position.z += moveWeigthY * playerSpeedMultiplier;
-      camera.position.y += devMode ? Math.sin(verticalRotation) * playerSpeedMultiplier * direction : 0;
+      camera.position.x += Math.cos(nanToZero(degree) - horizontalRotation) * playerSpeedMultiplier * moveWeigthX;
+      camera.position.z += Math.cos(nanToZero(degree) - horizontalRotation) * playerSpeedMultiplier * moveWeigthY;
+      camera.position.y += devMode ? Math.sin(verticalRotation) * playerSpeedMultiplier * nanToZero(direction) : 0;
       console.log(camera.position);
     }
   });
@@ -195,4 +190,12 @@ const updateCameraPosition = (camera: PerspectiveCamera, cameraTarget: Mesh) => 
   cameraTarget.position.x = camera.position.x - cameraTargetDistance * Math.sin(horizontalRotation);
   cameraTarget.position.y = camera.position.y - cameraTargetDistance * Math.sin(verticalRotation);
   cameraTarget.position.z = camera.position.z - cameraTargetDistance * Math.cos(horizontalRotation);
+};
+
+// TODO: fix NaN issues
+const nanToZero = (value) => {
+  if (Number.isNaN(value)) {
+    return 0;
+  }
+  return value;
 };
